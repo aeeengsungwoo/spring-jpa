@@ -1,1 +1,1 @@
-# spring-jpa
+# Spring JPA를 공부해보자
