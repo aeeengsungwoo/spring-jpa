@@ -2,6 +2,7 @@ package jpabook.jpashop.domain;
 
 import jakarta.persistence.*;
 
+import jpabook.jpashop.domain.item.Item;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.util.Lazy;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.FetchType.*;
+import static jpabook.jpashop.domain.OrderStatus.CANCEL;
 
 @Entity
 @Table(name = "orders")
@@ -60,4 +62,55 @@ public class Order {
         this.delivery = delivery;
         delivery.setOrder(this);
     }
+
+    //== 생성 메서드 ==//
+
+    public static Order createOrder(Member member, Delivery delivery, OrderItem ... orderItems){
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for (OrderItem orderItem : orderItems){
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
+
+    //==비즈니스 로직==//
+
+    //주문 취소
+    public void cancel(){
+        if (delivery.getStatus() == DeliveryStatus.COMP) {
+            throw new IllegalStateException("이미 배송된 상품은 취소가 불가능합니다.");
+
+        }
+
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem: orderItems){
+            orderItem.cancel();
+        }
+    }
+
+    //==조회 로직==//
+
+    //전체 주문 가격
+
+
+    public int getTotalPrice(){
+        int totalPrice = 0;
+        for (OrderItem orderItem : orderItems){
+            totalPrice += orderItem.totalPrice();
+        }
+        return totalPrice;
+    }
+    // 위 코드를 아래 코드와 같이 스트림 문법을 사용해서 간단히 나타낼 수 있다.
+    // for 부분에서 option + enter 누르면 리스트가 뜨는데, 거기서 stream sum()을 누르면 스트림 문법을 사용한 방법으로 바뀐다.
+    // 이후 total 부분에서 option + command + N 을 누르면 더 간단하게 바꿀 수 있다.
+//    public int getTotalPrice(){
+//        return orderItems.stream()
+//                .mapToInt(OrderItem::totalPrice)
+//                .sum();
+//    }
+
 }
