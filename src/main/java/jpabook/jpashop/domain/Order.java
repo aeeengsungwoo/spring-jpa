@@ -3,7 +3,9 @@ package jpabook.jpashop.domain;
 import jakarta.persistence.*;
 
 import jpabook.jpashop.domain.item.Item;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.util.Lazy;
 
@@ -17,6 +19,7 @@ import static jpabook.jpashop.domain.OrderStatus.CANCEL;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
