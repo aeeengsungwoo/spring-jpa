@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-class MemberServiceTest {
+class MemberServiceTest { //junit5
 
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
